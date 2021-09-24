@@ -99,7 +99,9 @@ Capa IGNBseOrto (hasta nivel 16): https://tms-ign-base.ign.es/1.0.0/IGNBaseOrto/
         },
     });
 
-    const urlBase='https://projects.develmap.com/apicnig/lapalma/';
+    //const urlBase='https://projects.develmap.com/apicnig/lapalma/';
+    const urlBase='https://www.ign.es/resources/viewer/lapalma/';
+    
 
     /**
      * Definismos ejempls de capas TMS y XYZ
@@ -133,7 +135,7 @@ Capa IGNBseOrto (hasta nivel 16): https://tms-ign-base.ign.es/1.0.0/IGNBaseOrto/
         tiled: false,
         visibility: false,
     }, {
-        styles: 'carreteras'
+        styles: 'TN.RoadTransportNetwork.RoadLink.Default'
     });
 
     const wmsUA = new M.layer.WMS({
@@ -158,9 +160,10 @@ Capa IGNBseOrto (hasta nivel 16): https://tms-ign-base.ign.es/1.0.0/IGNBaseOrto/
     });
 
     const wmsCatastro = new M.layer.WMS({
-        url: 'https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?',
+        url: 'https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?version:1.1.1',
         name: 'Catastro',
         legend: 'Catastro',
+        version: '1.1.1',
         tiled: false,
         visibility: false,
     }, {});
@@ -173,6 +176,10 @@ Capa IGNBseOrto (hasta nivel 16): https://tms-ign-base.ign.es/1.0.0/IGNBaseOrto/
 */
 
     map.addLayers([wmsGeofisica,wmsUA,wmsTransporte,wmsCatastro]);
+    wmsGeofisica.setZIndex(4600);
+    wmsUA.setZIndex(4601);
+    wmsTransporte.setZIndex(4602);
+    wmsCatastro.setZIndex(4603);
     // map.addLayers([wmsGeofisica,wmsUA]);
 
     /**
@@ -210,10 +217,17 @@ Capa IGNBseOrto (hasta nivel 16): https://tms-ign-base.ign.es/1.0.0/IGNBaseOrto/
         extract: false,
         
     },{
-        visibility: true,
+        visibility: false,
     });
 
-    
+    const vectorColada04 = new M.layer.GeoJSON({
+        name: 'Estimación colada 2021-09-23 06:14 UTC',
+        url: urlBase + 'data/colada20210923-0614.geojson',
+        extract: false,
+        
+    },{
+        visibility: true,
+    });
 
     const vectorVolcano = new M.layer.GeoJSON({
         name: "Situación del volcán Cumbre Vieja",
@@ -224,7 +238,7 @@ Capa IGNBseOrto (hasta nivel 16): https://tms-ign-base.ign.es/1.0.0/IGNBaseOrto/
         visibility: true,
     });
 
-    map.addLayers([vectorColada01,vectorColada02,vectorColada03,vectorVolcano]);
+    map.addLayers([vectorColada01,vectorColada02,vectorColada03,vectorColada04,vectorVolcano]);
 
     // Punto de tamaño 5 con relleno verde semitransparente y borde rojo
     let estiloVerde = new M.style.Point({
@@ -492,9 +506,14 @@ Capa IGNBseOrto (hasta nivel 16): https://tms-ign-base.ign.es/1.0.0/IGNBaseOrto/
 
     vectorColada01.setStyle(stylePol);
     vectorColada02.setStyle(stylePol);
-    vectorColada03.setStyle(stylePolLast);
+    vectorColada03.setStyle(stylePol);
+    vectorColada04.setStyle(stylePolLast);
     vectorVolcano.setStyle(estiloVolcan);
-    
+    vectorColada01.setZIndex(5000);
+    vectorColada02.setZIndex(5001);
+    vectorColada03.setZIndex(5002);
+    vectorColada04.setZIndex(5003);
+    vectorVolcano.setZIndex(5004);
     
 
     /**
